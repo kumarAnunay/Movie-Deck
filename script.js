@@ -17,7 +17,7 @@ const showMore = ({ metadata, showMoreBtn }) => {
     metadata.style.display = metadata.style.display === "block" ? "none" : "block";
 };
 
-const createMovieCard = ({ id, title: movieTitle, release_date, vote_average, vote_count, poster_path, }) => {
+const createMovieCard = ({ title: movieTitle, release_date, vote_average, vote_count, poster_path, }) => {
 
     const card = document.createElement("div");
     card.classList.add("card");
