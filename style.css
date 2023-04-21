@@ -1,7 +1,7 @@
 * {
   margin: 0;
+
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
@@ -10,71 +10,72 @@ body {
 
 header {
   text-align: center;
-  background: rgb(125, 21, 21);
+
   color: black;
+
+  background: rgb(107, 7, 7);
+
   padding: 1em;
 }
 
 h1 {
   text-transform: uppercase;
-  margin-bottom: 10px;
-  font-weight: 800 !important;
-}
 
-.form-inline {
-  display: inline !important;
-}
+  color: white;
 
-.form-control {
-  width: 30% !important;
+  margin-bottom: 1em;
 }
 
 section {
   background: lightblue;
-  padding: 0 10%;
 }
 
 .card-grid {
+  /* display: flex;
+  
+  justify-content: center; */
+
   display: grid;
+
   grid-template-columns: repeat(3, 1fr);
+
   column-gap: 10px;
-  padding: 10px;
+
+  padding: 10px 0;
 }
 
 .card {
+  /* width: 33%; */
+
   background: white;
+
   border-radius: 5px;
-  border-bottom: 5px solid rgb(125, 21, 21);
+
   text-align: center;
-  padding: 16px;
-  margin-bottom: 16px;
+
+  padding: 1em;
+
+  margin-bottom: 1em;
 }
 
-.card > img {
+.card>img {
   width: 60%;
-  margin: 0 20%;
-}
-
-.card > h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: rgb(125, 21, 21);
-  margin-top: 8px;
-}
-
-.card > button {
-  width: 40%;
-  margin: 0 30%;
-  border: none;
 }
 
 footer {
   font-size: 20px;
-  background: rgb(125, 21, 21);
+
   color: black;
+
+  background: rgb(107, 7, 7);
+
   text-align: center;
+
   padding: 0.25em;
+
   width: 100%;
+
   position: fixed;
+
   bottom: 0;
 }
