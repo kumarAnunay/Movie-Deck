@@ -1,4 +1,6 @@
-var movies = [], allMoviesGrid, favMovie = [], favGrid;
+var movies = [], allMoviesGrid, favMovies, favGrid;
+
+const regex = /^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/
 
 class Movie {
 
@@ -20,17 +22,21 @@ class Movie {
 
     addToFavorite() {
 
-        favMovie.push(this)
+        favMovies.push(this)
 
-        reRenderCardGrid(favMovie, favGrid);
+        localStorage.setItem('favMovies', JSON.stringify(favMovies))
+
+        reRenderCardGrid(favMovies, favGrid);
 
     }
 
     removeFromFavorite() {
 
-        favMovie = favMovie.filter(movie => movie.id !== this.id);
+        favMovies = favMovies.filter(movie => movie.id !== this.id);
 
-        reRenderCardGrid(favMovie, favGrid);
+        localStorage.setItem('favMovies', JSON.stringify(favMovies))
+
+        reRenderCardGrid(favMovies, favGrid);
 
         document.getElementById(`${this.id}-allMoviesGrid`).innerText = 'Add to Favorites';
 
@@ -40,21 +46,33 @@ class Movie {
 
 const fetchData = async () => {
 
-    const res = await fetch('https://api.themoviedb.org/3/movie/top_rated?api_key=f531333d637d0c44abc85b3e74db2186&language=en-US&page=1')
+    favGrid = document.getElementById('favorite-grid');
 
-    const movieData = await res.json();
+    favMovies = JSON.parse(localStorage.getItem('favMovies')) ?? [];
 
-    movieData.results.forEach(movie => {
-
-        movies.push(new Movie(movie.id, movie.title, movie.release_date, movie.vote_average, movie.vote_count, movie.poster_path));
-
-    })
+    reRenderCardGrid(favMovies, favGrid);
 
     allMoviesGrid = document.getElementById('all-movies-grid');
 
-    favGrid = document.getElementById('favorite-grid');
+    try {
 
-    sortMovies({ value: 'rating-desc' })
+        const res = await fetch('https://api.themoviedb.org/3/movie/top_rated?api_key=f531333d637d0c44abc85b3e74db2186&language=en-US&page=1')
+
+        const movieData = await res.json();
+
+        movieData.results.forEach(movie => {
+
+            movies.push(new Movie(movie.id, movie.title, movie.release_date, movie.vote_average, movie.vote_count, movie.poster_path));
+
+        })
+
+        sortMovies({ value: 'rating-desc' })
+
+    } catch (err) {
+
+        allMoviesGrid.innerText = 'API failed and please contact the administrator';
+
+    }
 
 }
 
@@ -76,7 +94,7 @@ const createMovieCard = (movie, cardGrid) => {
 
     const poster = document.createElement('img');
 
-    poster.src = `https://image.tmdb.org/t/p/w500${posterPath}`;
+    poster.src = posterPath ? `https://image.tmdb.org/t/p/w500${posterPath}` : 'https://w7.pngwing.com/pngs/116/765/png-transparent-clapperboard-computer-icons-film-movie-poster-angle-text-logo-thumbnail.png';
 
     const movieTitle = document.createElement('h3');
 
@@ -98,9 +116,9 @@ margin-bottom: 0.5em;
 
 `;
 
-    favoriteBtn.innerText = cardGrid === allMoviesGrid ? 'Add to Favorites' : 'Remove from Favorites';
+    favoriteBtn.innerText = generateFavBtnText(cardGrid, id)
 
-    favoriteBtn.addEventListener('click', () => toggleFavMovie({ movie, favoriteBtn }))
+    favoriteBtn.addEventListener('click', () => toggleFavMovies({ movie, favoriteBtn }))
 
     const metadata = document.createElement('div');
 
@@ -142,6 +160,20 @@ margin: auto;
 
 }
 
+const generateFavBtnText = (cardGrid, id) => {
+
+    if (cardGrid === allMoviesGrid) {
+
+        return favMovies.find(movie => movie.id === id) ? 'Remove from Favorites' : 'Add to Favorites';
+
+    } else {
+
+        return 'Remove from Favorites';
+
+    }
+
+}
+
 const reRenderCardGrid = (updatedMoviesList, movieGrid) => {
 
     movieGrid.innerHTML = '';
@@ -152,9 +184,17 @@ const reRenderCardGrid = (updatedMoviesList, movieGrid) => {
 
 const searchMovies = (elem) => {
 
-    const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(elem.value.toLowerCase()));
+    if (regex.test(elem.value)) {
 
-    reRenderCardGrid(filteredMovies, allMoviesGrid)
+        alert('Invalid search');
+
+    } else {
+
+        const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(elem.value.toLowerCase()));
+
+        reRenderCardGrid(filteredMovies, allMoviesGrid)
+
+    }
 
 }
 
@@ -206,7 +246,7 @@ const sortMovies = (elem) => {
 
 }
 
-const toggleFavMovie = ({ movie, favoriteBtn }) => {
+const toggleFavMovies = ({ movie, favoriteBtn }) => {
 
     if (favoriteBtn.innerText === 'Add to Favorites') {
 

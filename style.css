@@ -21,7 +21,7 @@ header {
 h1 {
   text-transform: uppercase;
 
-  color: white;
+  font-weight: bold !important;
 
   margin-bottom: 1em;
 }
@@ -32,8 +32,8 @@ section {
 
 .card-grid {
   /* display: flex;
-  
-  justify-content: center; */
+    
+    justify-content: center; */
 
   display: grid;
 
